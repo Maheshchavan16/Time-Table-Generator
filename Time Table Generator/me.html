@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>School Time Table Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 30px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .input-container {
+      margin-bottom: 20px;
+    }
+
+    label {
+      margin-right: 5px;
+    }
+
+    #timeTable {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 5px;
+    }
+
+    .cell {
+      width: 120px;
+      height: 50px;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lunch-break {
+      background-color: #f2f2f2;
+    }
+
+    .day-heading {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>School Time Table Generator</h1>
+  
+  <div class="input-container">
+  <label for="faculty">Select Faculty:</label>
+    <select id="faculty" name="faculty">
+        <option value="faculty1">Dr. Sunil Wankhade</option>
+        <option value="faculty2">Prof. Anushree Deshmukh</option>
+        <option value="faculty3">Prof. Mrunalinee Soliv</option>
+        <option value="faculty4">Prof. Gowind Wakure</option>
+        <option value="faculty5">Prof. Rahul Jivane</option>
+        <option value="faculty6">Prof. SK Sabnis</option>
+        <!-- Add more faculty options as needed -->
+      </select>
+      <br><br>
+      
+    <label for="days">Days:</label>
+    <input type="number" id="days" min="1" max="7">
+    <label for="periods">Periods:</label>
+    <input type="number" id="periods" min="1" max="7">
+    <h2>
+    <button onclick="generateTable()">Generate</button>
+    </h2>
+  </div>
+  <div id="timeTable"></div>
+
+  <div class="container">
+    <form id="timetable-form">
+      <label for="faculty">Select Faculty:</label>
+      <select id="faculty" name="faculty">
+        <option value="faculty1">Dr. Sunil Wankhade</option>
+        <option value="faculty2">Prof. Anushree Deshmukh</option>
+        <option value="faculty3">Prof. Mrunalinee Soliv</option>
+        <option value="faculty4">Prof. Gowind Wakure</option>
+        <option value="faculty5">Prof. Rahul Jivane</option>
+        <option value="faculty6">Prof. SK Sabnis</option>
+        <!-- Add more faculty options as needed -->
+      </select>
+      <br><br>
+
+      <label for="time">Select Time:</label>
+      <select id="time" name="time">
+        <option value="8:00 AM">8:00 AM</option>
+        <option value="9:00 AM">9:00 AM</option>
+        <option value="10:00 AM">10:00 AM</option>
+        <!-- Add more time options as needed -->
+      </select><br><br>
+
+      <label for="day">Select Day:</label>
+      <select id="day" name="day">
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+        <!-- Add more day options as needed -->
+      </select><br><br>
+
+      <label for="class">Class Name:</label>
+      <input type="text" id="class" name="class" placeholder="Enter class name"><br>
+      <br>
+
+      <label for="subject">Subject:</label>
+      <input type="text" id="subject" name="subject" placeholder="Enter subject"><br><br>
+
+      <button type="button" id="add-class" onclick="addClassToTimetable()">Add Class</button>
+    </form>
+  </div>
+
+  <script>
+    function generateTable() {
+      const days = parseInt(document.getElementById('days').value);
+      const periods = parseInt(document.getElementById('periods').value);
+      const timeTable = document.getElementById('timeTable');
+      timeTable.innerHTML = '';
+      const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      const headerRow = document.createElement('div');
+      headerRow.className = 'row';
+      headerRow.classList.add('day-heading');
+      for (let j = 0; j < days; j++) {
+        const headerCell = document.createElement('div');
+        headerCell.className = 'cell';
+        headerCell.innerText = dayNames[j];
+        headerRow.appendChild(headerCell);
+      }
+      timeTable.appendChild(headerRow);
+      // Sample subject names and teacher names
+      const subjects = [
+        ['Proj. rev', 'Faculty 1'],
+        ['SE', 'Faculty 2'],
+        ['IP', 'Faculty 3'],
+        ['CNS', 'Faculty 4'],
+        ['EEB', 'Faculty 5'],
+        ['PCE', 'Faculty 6'],
+        ['ADSA', 'Faculty 7'],
+      ];
+      for (let i = 0; i < periods; i++) {
+        const row = document.createElement('div');
+        row.className = 'row';
+        for (let j = 0; j < days; j++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          if ((i + 1) === Math.ceil(periods / 2)) {
+            cell.classList.add('lunch-break');
+            cell.innerText = 'Lunch Break';
+          } else {
+            const subjectIndex = Math.floor(Math.random() * subjects.length);
+            const [subject, teacher] = subjects[subjectIndex];
+            cell.innerText = `${subject}\n${teacher}`;
+          }
+          row.appendChild(cell);
+        }
+        timeTable.appendChild(row);
+      }
+    }
+
+    function addClassToTimetable() {
+      const faculty = document.getElementById('faculty').value;
+      const time = document.getElementById('time').value;
+      const day = document.getElementById('day').value;
+      const className = document.getElementById('class').value;
+      const subject = document.getElementById('subject').value;
+
+      const timeTable = document.getElementById('timeTable');
+      const rows = timeTable.querySelectorAll('.row');
+
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('.cell');
+        const dayName = cells[0].innerText;
+        if (dayName === day) {
+          cells.forEach(cell => {
+            if (cell.innerText.trim() === "") {
+              cell.innerText = `${subject}\n${faculty}\n${time}\n${className}`;
+              cell.style.background = "#d3ffd3"; // Background color for added classes
+            }
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>
